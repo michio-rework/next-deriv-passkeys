@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { TAuthResponse } from "types/api.types";
 import {
@@ -41,6 +40,7 @@ const singup = async (
     user: {
       id: currentUser.id,
       email: currentUser.email,
+      authenticators: [],
     },
     accessToken,
   });

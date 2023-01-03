@@ -20,6 +20,9 @@ const signin = async (
         where: {
           email,
         },
+        include: {
+          PasskeyAuthenticators: true,
+        },
       });
 
       if (user.password) {
@@ -34,6 +37,7 @@ const signin = async (
           const userForTheClient = {
             id: user.id,
             email: user.email,
+            authenticators: user.PasskeyAuthenticators,
           };
           res.send({ user: userForTheClient, accessToken });
         } else {

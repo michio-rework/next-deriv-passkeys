@@ -1,11 +1,12 @@
 import Input from "components/input";
 import InputContainer from "components/inputContainer";
 import Label from "components/label";
+import usePasskeyLogin from "hooks/usePasskeyLogin";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
-import Box from "../../components/box";
-import Button from "../../components/button";
+import Box from "components/box";
+import Button from "components/button";
 
 interface IPasskeysFormInputs {
   email: string;
@@ -32,12 +33,16 @@ export default function Home() {
   } = useForm<IPasskeysFormInputs>({ mode: "all", reValidateMode: "onBlur" });
   const { push } = useRouter();
 
+  const { loading, loginPasskey } = usePasskeyLogin();
+  const onSubmit: SubmitHandler<IPasskeysFormInputs> = (data) => {
+    loginPasskey(data.email);
+  };
   return (
     <StyledBox>
       <div>
         <h1>Auth With Passkeys</h1>
       </div>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
           <Label>Email</Label>
           <Input
@@ -54,8 +59,7 @@ export default function Home() {
         </InputContainer>
 
         <ButtonContainer>
-          <Button type="button">Log In with passkeys</Button>
-          <Button type="button">Sign Up with passkeys</Button>
+          <Button type="submit">Log In with passkeys</Button>
           <Button type="button" onClick={() => push("/")}>
             home page
           </Button>

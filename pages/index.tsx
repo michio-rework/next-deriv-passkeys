@@ -39,6 +39,13 @@ export default function Home() {
           </p>
         )}
       </div>
+      <div>
+        <p>
+          If you dont have an account please create one with
+          <strong> email and password </strong>
+          and then try adding passkeys to your registered account
+        </p>
+      </div>
       <ButtonContainer>
         <Button onClick={() => router.push("/password-auth")}>
           Password Flow

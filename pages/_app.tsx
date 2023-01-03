@@ -73,8 +73,6 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [accessToken, setAccessToken, setUser]);
 
-  console.log("render");
-
   useEffect(() => {
     if (accessToken) {
       if (!router.pathname.includes("dashboard")) {
@@ -85,7 +83,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Loading loading={isAppLoading} />
+      <Loading loading={appLoading} />
       <Layout className={roboto.className}>
         <Component {...pageProps} />
       </Layout>

@@ -1,4 +1,4 @@
-import { useAppStore } from "../store";
+import { useAppStore } from "store";
 import { useRouter } from "next/router";
 import { ComponentType } from "react";
 

@@ -1,7 +1,6 @@
 import { verify } from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
-
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET ?? "secret";
+import { ACCESS_TOKEN_SECRET } from "../_utils/configs";
 
 const checkAuth = (
   handler: (req: NextApiRequest, res: NextApiResponse) => void
@@ -13,6 +12,8 @@ const checkAuth = (
 
       const token = authorization.split(" ")[1];
       verify(token, ACCESS_TOKEN_SECRET);
+
+      console.log("token: ", token);
 
       return handler(req, res);
     } catch (e) {

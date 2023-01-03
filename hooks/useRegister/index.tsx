@@ -1,6 +1,6 @@
 import useAxios from "axios-hooks";
 import { API_REGISTER } from "appConstants";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useAppStore } from "store";
 import { TSecureUser } from "types/user.type";
 

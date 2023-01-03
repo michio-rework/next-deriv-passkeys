@@ -1,16 +1,13 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { verify } from "jsonwebtoken";
 import cookie from "cookie";
-import Prisma from "../../../utils/initPrisma";
+import Prisma from "utils/initPrisma";
 import {
   createAccessToken,
   createRefreshToken,
   sendRefreshToken,
-} from "../../../utils/auth";
-
-const REFRESH_TOKEN_SECRET =
-  process.env.REFRESH_TOKEN_SECRET ?? "refreshsecret";
+} from "utils/auth";
+import { REFRESH_TOKEN_SECRET } from "../_utils/configs";
 
 const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
@@ -28,9 +25,8 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
         where: {
           id: payload.userId,
         },
-        select: {
-          id: true,
-          email: true,
+        include: {
+          PasskeyAuthenticators: true,
         },
       });
 
@@ -39,7 +35,12 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
       sendRefreshToken(res, createRefreshToken(user));
       const accessToken = createAccessToken(user);
 
-      return res.send({ ok: true, accessToken, user });
+      const userForTheClient = {
+        id: user.id,
+        email: user.email,
+        authenticators: user.PasskeyAuthenticators,
+      };
+      res.send({ ok: true, user: userForTheClient, accessToken });
     } catch (e) {
       console.log(e);
       return res.send({ ok: false, accessToken: "" });

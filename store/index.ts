@@ -1,5 +1,5 @@
 import create from "zustand";
-import { TSecureUser } from "../types/user.type";
+import { TSecureUser } from "types/user.type";
 
 export interface StoreState {
   accessToken: string;
@@ -16,6 +16,7 @@ export interface StoreState {
 const initialUser: TSecureUser = {
   id: -1,
   email: "",
+  authenticators: [],
 };
 
 export const useAppStore = create<StoreState>((set) => ({

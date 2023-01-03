@@ -2,8 +2,8 @@ import useLogout from "hooks/useLogout";
 import useSignup from "hooks/useRegister";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import useLogin from "../hooks/useLogin";
-import { useAppStore } from "../store";
+import useLogin from "hooks/useLogin";
+import { useAppStore } from "store";
 
 export default function Home() {
   const [email, setEmail] = useState("");

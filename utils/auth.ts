@@ -1,11 +1,11 @@
 import { sign } from "jsonwebtoken";
 import cookie from "cookie";
-import { TSecureUser } from "../types/user.type";
+import { TSecureUser } from "types/user.type";
 import { NextApiResponse } from "next";
-
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET ?? "secret";
-const REFRESH_TOKEN_SECRET =
-  process.env.REFRESH_TOKEN_SECRET ?? "refreshsecret";
+import {
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+} from "pages/api/_utils/configs";
 
 export const refreshToken = () => {
   return fetch("/api/token/refresh", {
