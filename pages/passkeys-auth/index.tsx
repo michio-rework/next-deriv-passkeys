@@ -7,8 +7,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
 import Box from "components/box";
 import Button from "components/button";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAppStore } from "store";
+import useWebAuthn from "hooks/useWebAuthn";
 
 interface IPasskeysFormInputs {
   email: string;
@@ -37,6 +38,8 @@ export default function Home() {
 
   const { setAppLoading } = useAppStore();
 
+  const { hasWebAuthnAutofill } = useWebAuthn();
+
   const { loading, loginPasskey } = usePasskeyLogin();
 
   useEffect(() => {
@@ -46,6 +49,15 @@ export default function Home() {
   const onSubmit: SubmitHandler<IPasskeysFormInputs> = (data) => {
     loginPasskey(data.email);
   };
+
+  const autoCompelete = useMemo(() => {
+    let result = ["username"];
+    if (hasWebAuthnAutofill) {
+      result.push("webauthn");
+    }
+    return result.join(" ");
+  }, [hasWebAuthnAutofill]);
+
   return (
     <StyledBox>
       <div>
@@ -57,6 +69,7 @@ export default function Home() {
           <Input
             placeholder="Enter your email"
             autoFocus={true}
+            autoComplete={autoCompelete}
             type="email"
             {...register("email", {
               required: true,
