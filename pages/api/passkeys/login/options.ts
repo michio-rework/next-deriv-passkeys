@@ -3,6 +3,7 @@ import { PublicKeyCredentialDescriptorFuture } from "@simplewebauthn/typescript-
 import { User } from "@prisma/client";
 import Prisma from "utils/initPrisma";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
+import { RELYING_PARTY_ID } from "pages/api/_utils/configs";
 
 const getUserAuthenticators = (user: User) => {
   return Prisma.passkeyAuthenticator.findMany({
@@ -68,6 +69,7 @@ const GetLoginPasskeyOptions = async (
     const options = generateAuthenticationOptions({
       allowCredentials: credentials,
       userVerification: "discouraged",
+      rpID: RELYING_PARTY_ID,
     });
 
     await Prisma.passkeyLoginChallenge.create({
