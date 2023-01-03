@@ -27,11 +27,11 @@ export default function Home() {
     <StyledBox>
       <div>
         <h1>Passkeys POC</h1>
-        {hasWebAuthnSupport && <h3>Your Device Has Webauthn Support!</h3>}
+        {hasWebAuthnSupport && <h3>Your Device Has WebAuthn Support!</h3>}
         {hasWebAuthnSupport ? (
           <p>
-            You can either login / register as with <strong>Password</strong>{" "}
-            and with <strong>Passkeys</strong>
+            You can either login / register as with <strong>Password</strong> or
+            with <strong>Passkeys</strong>
           </p>
         ) : (
           <p>
@@ -40,8 +40,14 @@ export default function Home() {
         )}
       </div>
       <ButtonContainer>
-        <Button onClick={() => router.push("/password")}>Password Flow</Button>
-        <Button onClick={() => router.push("/passkeys")}>Passkeys Flow</Button>
+        <Button onClick={() => router.push("/password-auth")}>
+          Password Flow
+        </Button>
+        {hasWebAuthnSupport && (
+          <Button onClick={() => router.push("/passkeys-auth")}>
+            Passkeys Flow
+          </Button>
+        )}
       </ButtonContainer>
     </StyledBox>
   );

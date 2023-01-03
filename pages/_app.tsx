@@ -5,9 +5,25 @@ import { useAppStore } from "../store";
 import { refreshToken } from "../utils/auth";
 import Layout from "../components/layout";
 import { IBM_Plex_Sans } from "@next/font/google";
-import { RingSpinner, RouletteSpinner } from "react-spinner-overlay";
 import Loading from "../components/loading";
 import { configure } from "axios-hooks";
+import axios from "axios";
+import { useRouter } from "next/router";
+
+axios.interceptors.request.use(
+  async (config) => {
+    const token = useAppStore.getState().accessToken;
+
+    if (token) {
+      config.headers = {
+        authorization: `Bearer ${token}`,
+      };
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 configure({ defaultOptions: { manual: true, autoCancel: true } });
 
@@ -17,6 +33,7 @@ const roboto = IBM_Plex_Sans({
 });
 export default function App({ Component, pageProps }: AppProps) {
   const { setAccessToken, setUser, accessToken } = useAppStore();
+  const { replace } = useRouter();
 
   const [loading, setLoading] = useState(true);
 
@@ -51,6 +68,12 @@ export default function App({ Component, pageProps }: AppProps) {
       clearInterval(interval);
     };
   }, [accessToken, setAccessToken, setUser]);
+
+  useEffect(() => {
+    if (accessToken) {
+      replace("/dashboard");
+    }
+  }, [accessToken, replace]);
 
   return (
     <>
