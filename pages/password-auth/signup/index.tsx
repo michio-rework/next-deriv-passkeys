@@ -1,17 +1,14 @@
-import useLogout from "hooks/useLogout";
+import Box from "components/box";
+import Button from "components/button";
+import Input from "components/input";
+import InputContainer from "components/inputContainer";
+import Label from "components/label";
 import useSignup from "hooks/useRegister";
-import Link from "next/link";
-import { MouseEventHandler, useCallback, useEffect, useState } from "react";
-import useLogin from "hooks/useLogin";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useAppStore } from "store";
 import styled from "styled-components";
-import Box from "components/box";
-import { SubmitHandler, useForm } from "react-hook-form";
-import Label from "components/label";
-import InputContainer from "components/inputContainer";
-import Input from "components/input";
-import Button from "components/button";
-import { useRouter } from "next/router";
 
 interface ISignUpFormInputs {
   email: string;
@@ -38,10 +35,15 @@ export default function PasswordSignup() {
     handleSubmit,
     formState: { errors },
   } = useForm<ISignUpFormInputs>({ mode: "all", reValidateMode: "onBlur" });
+  const { setAppLoading } = useAppStore();
 
   const { push } = useRouter();
 
-  const { onSignup } = useSignup();
+  const { onSignup, signUpLoading } = useSignup();
+
+  useEffect(() => {
+    setAppLoading(signUpLoading);
+  }, [signUpLoading, setAppLoading]);
 
   const onSubmit: SubmitHandler<ISignUpFormInputs> = (data) => {
     onSignup(data);

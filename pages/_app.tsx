@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAppStore } from "../store";
 import { refreshToken } from "../utils/auth";
 import Layout from "../components/layout";
@@ -32,10 +32,14 @@ const roboto = IBM_Plex_Sans({
   subsets: ["latin"],
 });
 export default function App({ Component, pageProps }: AppProps) {
-  const { setAccessToken, setUser, accessToken } = useAppStore();
+  const { appLoading, setAccessToken, setUser, accessToken } = useAppStore();
   const { replace } = useRouter();
 
   const [loading, setLoading] = useState(true);
+
+  const isAppLoading = useMemo(() => {
+    return loading || appLoading;
+  }, [appLoading, loading]);
 
   useEffect(() => {
     //initial funciton
@@ -77,7 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Loading loading={loading} />
+      <Loading loading={isAppLoading} />
       <Layout className={roboto.className}>
         <Component {...pageProps} />
       </Layout>
