@@ -1,5 +1,6 @@
 *, *::before, *::after {
   box-sizing: border-box;
+  color:black;
 }
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;

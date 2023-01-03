@@ -67,7 +67,7 @@ const GetLoginPasskeyOptions = async (
 
     const options = generateAuthenticationOptions({
       allowCredentials: credentials,
-      userVerification: "preferred",
+      userVerification: "discouraged",
     });
 
     await Prisma.passkeyLoginChallenge.create({
