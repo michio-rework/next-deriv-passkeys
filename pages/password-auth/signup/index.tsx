@@ -74,7 +74,7 @@ export default function PasswordSignup() {
           <Input
             placeholder="Enter your password"
             type="password"
-            {...register("password", { required: true, minLength: 1 })}
+            {...register("password", { required: true, minLength: 5 })}
           />
           {errors.password && <span>Please Check your Password</span>}
         </InputContainer>
