@@ -77,9 +77,9 @@ const GetLoginPasskeyOptions = async (
       },
     });
     res.status(200).send(options);
+  } else {
+    res.status(404).send({});
   }
-
-  res.status(404).send({});
 };
 
 export default GetLoginPasskeyOptions;
