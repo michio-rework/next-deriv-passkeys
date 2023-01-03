@@ -44,7 +44,7 @@ const getUserCredentials = async (
       id: authenticator.credentialID,
       type: "public-key",
       // Optional
-      // transports: authenticator.transports,
+      transports: authenticator.transports,
     })
   );
   return credentials;
