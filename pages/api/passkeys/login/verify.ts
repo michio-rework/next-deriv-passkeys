@@ -1,6 +1,7 @@
 import { PasskeyAuthenticator } from "@prisma/client";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { ORIGIN, RELYING_PARTY_ID } from "pages/api/_utils/configs";
 import {
   createAccessToken,
   createRefreshToken,
@@ -44,8 +45,8 @@ const VerifyPasskeyLogin = async (
       {
         credential,
         expectedChallenge: challenge,
-        expectedOrigin: "http://localhost:3000",
-        expectedRPID: "localhost",
+        expectedOrigin: ORIGIN,
+        expectedRPID: RELYING_PARTY_ID,
         authenticator: rest,
       }
     );

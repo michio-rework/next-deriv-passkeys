@@ -3,6 +3,7 @@ import Prisma from "utils/initPrisma";
 import { User } from "@prisma/client";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { PublicKeyCredentialDescriptorFuture } from "@simplewebauthn/typescript-types";
+import { RELYING_PARTY_ID, RELYING_PARTY_NAME } from "pages/api/_utils/configs";
 
 const checkStaleRegistrationChallenge = async (user: User) => {
   // check if we already have a challenge for the user
@@ -66,8 +67,8 @@ const GetRegisterPasskeyOptions = async (
     const credentials = await getUserCredentials(user);
 
     const options = generateRegistrationOptions({
-      rpName: "deriv passkeys",
-      rpID: "localhost",
+      rpName: RELYING_PARTY_NAME,
+      rpID: RELYING_PARTY_ID,
       userID: String(user.id),
       userName: user.email,
       attestationType: "direct",

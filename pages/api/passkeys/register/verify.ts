@@ -4,6 +4,7 @@ import {
   verifyRegistrationResponse,
   VerifyRegistrationResponseOpts,
 } from "@simplewebauthn/server";
+import { ORIGIN, RELYING_PARTY_ID } from "pages/api/_utils/configs";
 
 const VerifyPasskeyRegister = async (
   req: NextApiRequest,
@@ -11,8 +12,6 @@ const VerifyPasskeyRegister = async (
 ) => {
   if (req.method === "POST") {
     const { credential, email } = req.body;
-
-    console.log("yooooooooooooooooooooooooooooooooooooooooooooooooo: ", email);
 
     const user = await Prisma.user.findUniqueOrThrow({
       where: {
@@ -34,8 +33,8 @@ const VerifyPasskeyRegister = async (
     const registrationOptions: VerifyRegistrationResponseOpts = {
       credential,
       expectedChallenge: challenge,
-      expectedOrigin: "http://localhost:3000",
-      expectedRPID: "localhost",
+      expectedOrigin: ORIGIN,
+      expectedRPID: RELYING_PARTY_ID,
     };
 
     const { verified, registrationInfo } = await verifyRegistrationResponse(
