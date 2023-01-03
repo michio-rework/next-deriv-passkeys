@@ -50,7 +50,7 @@ export default function Home() {
     loginPasskey(data.email);
   };
 
-  const autoCompelete = useMemo(() => {
+  const autoComplete = useMemo(() => {
     let result = ["username"];
     if (hasWebAuthnAutofill) {
       result.push("webauthn");
@@ -69,7 +69,7 @@ export default function Home() {
           <Input
             placeholder="Enter your email"
             autoFocus={true}
-            autoComplete={autoCompelete}
+            autoComplete={autoComplete}
             type="email"
             {...register("email", {
               required: true,
