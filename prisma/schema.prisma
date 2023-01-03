@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String?
+
+  // Relations
+  PasskeyRegisterationChallenge PasskeyRegistrationChallenge[]
+  PasskeyAuthenticators         PasskeyAuthenticator[]
+  PasskeyLoginChallenges        PasskeyLoginChallenge[]
+
+  @@map(name: "users")
+}
+
+model PasskeyRegistrationChallenge {
+  id        Int     @id @default(autoincrement())
+  challenge String  @unique
+  verified  Boolean @default(false)
+  active    Boolean @default(true)
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model PasskeyLoginChallenge {
+  id        Int     @id @default(autoincrement())
+  challenge String  @unique
+  verified  Boolean @default(false)
+  active    Boolean @default(true)
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model PasskeyAuthenticator {
+  id                   Int      @id @default(autoincrement())
+  userId               Int
+  user                 User     @relation(fields: [userId], references: [id])
+  counter              Int
+  credentialID         Bytes
+  credentialPublicKey  Bytes
+  attestationFormat    Bytes
+  credentialDeviceType String
+  transports           String[]
+}
