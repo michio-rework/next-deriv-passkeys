@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PublicKeyCredentialDescriptorFuture } from "@simplewebauthn/typescript-types";
+import {
+  PublicKeyCredentialDescriptorFuture,
+  AuthenticatorTransportFuture,
+} from "@simplewebauthn/typescript-types";
 import { User } from "@prisma/client";
 import Prisma from "utils/initPrisma";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
@@ -42,11 +45,12 @@ const getUserCredentials = async (
   const credentials: PublicKeyCredentialDescriptorFuture[] = authenticators.map(
     (authenticator) => ({
       id: authenticator.credentialID,
-      type: "public-key",
+      type: "public-key" as const,
       // Optional
-      transports: authenticator.transports,
+      transports: authenticator.transports as AuthenticatorTransportFuture[],
     })
   );
+
   return credentials;
 };
 
