@@ -7,6 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
 import Box from "components/box";
 import Button from "components/button";
+import { useEffect } from "react";
+import { useAppStore } from "store";
 
 interface IPasskeysFormInputs {
   email: string;
@@ -33,7 +35,14 @@ export default function Home() {
   } = useForm<IPasskeysFormInputs>({ mode: "all", reValidateMode: "onBlur" });
   const { push } = useRouter();
 
+  const { setAppLoading } = useAppStore();
+
   const { loading, loginPasskey } = usePasskeyLogin();
+
+  useEffect(() => {
+    setAppLoading(loading);
+  }, [loading, setAppLoading]);
+
   const onSubmit: SubmitHandler<IPasskeysFormInputs> = (data) => {
     loginPasskey(data.email);
   };

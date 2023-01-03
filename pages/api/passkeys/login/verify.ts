@@ -92,8 +92,9 @@ const VerifyPasskeyLogin = async (
     } else {
       res.status(404).send({});
     }
+  } else {
+    res.status(404).send({});
   }
-  res.status(404).send({});
 };
 
 export default VerifyPasskeyLogin;
