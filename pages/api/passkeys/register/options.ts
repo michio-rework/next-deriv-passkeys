@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
-import checkAuth from "../../_middleware/checkAuthServer";
+import checkAuth from "pages/api/_middleware/checkAuthServer";
 
 const GetRegisterPasskeyOptions = (
   req: NextApiRequest,

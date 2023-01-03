@@ -33,7 +33,7 @@ const roboto = IBM_Plex_Sans({
 });
 export default function App({ Component, pageProps }: AppProps) {
   const { appLoading, setAccessToken, setUser, accessToken } = useAppStore();
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
 
@@ -73,11 +73,15 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [accessToken, setAccessToken, setUser]);
 
+  console.log("render");
+
   useEffect(() => {
     if (accessToken) {
-      replace("/dashboard");
+      if (!router.pathname.includes("dashboard")) {
+        router.push("/dashboard");
+      }
     }
-  }, [accessToken, replace]);
+  }, [accessToken, router]);
 
   return (
     <>

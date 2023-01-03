@@ -6,20 +6,20 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET ?? "secret";
 const checkAuth = (
   handler: (req: NextApiRequest, res: NextApiResponse) => void
 ) => {
-  return async (req : NextApiRequest, res: NextApiResponse) => {
+  return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const authorization = req.headers["authorization"]
-        if (!authorization) throw new Error("not authenticated")
-        
-        const token = authorization.split(" ")[1]
-        verify(token, ACCESS_TOKEN_SECRET);
+      const authorization = req.headers["authorization"];
+      if (!authorization) throw new Error("not authenticated");
 
-        return handler(req, res)
+      const token = authorization.split(" ")[1];
+      verify(token, ACCESS_TOKEN_SECRET);
+
+      return handler(req, res);
     } catch (e) {
-        console.log(e)
-        res.status(401).send({})
+      console.log(e);
+      res.status(401).send({});
     }
-}
+  };
 };
 
 export default checkAuth;
