@@ -47,6 +47,15 @@ export default function Home() {
           to your account
         </p>
       </div>
+      <p>
+        <strong>Note: </strong> On Mac devices if you add / create passkey
+        authenticators, it only works on your browser. so for every browser you
+        have to add a new passkey.
+      </p>
+      <p>
+        <strong>Note: </strong> Firefox browser does not support the passkeys
+        feature, but you can use YubiKey for authenitcaiton and authorization.
+      </p>
       <ButtonContainer>
         <Button onClick={() => router.push("/password-auth")}>
           Password Flow
