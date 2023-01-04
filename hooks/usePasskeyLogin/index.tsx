@@ -74,13 +74,7 @@ const usePasskeyLogin = () => {
         console.error("Something went wrong: ", error);
       }
     },
-    [
-      getPasskeyOptions,
-      hasWebAuthnAutofill,
-      setAccessToken,
-      setUser,
-      verifyLogin,
-    ]
+    [getPasskeyOptions, setAccessToken, setUser, verifyLogin]
   );
 
   return {
