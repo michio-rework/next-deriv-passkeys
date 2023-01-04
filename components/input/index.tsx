@@ -13,6 +13,7 @@ const Input = styled.input`
     transition: opacity 0.25s ease-out;
   }
 
+  background: transparent !important;
   &:hover::-webkit-input-placeholder,
   &:focus::-webkit-input-placeholder {
     opacity: 0;

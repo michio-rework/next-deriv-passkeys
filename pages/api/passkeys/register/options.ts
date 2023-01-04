@@ -75,10 +75,9 @@ const GetRegisterPasskeyOptions = async (
       rpID: RELYING_PARTY_ID,
       userID: String(user.id),
       userName: user.email,
-      attestationType: "none",
+      attestationType: "direct",
       authenticatorSelection: {
-        requireResidentKey: false,
-        userVerification: "discouraged",
+        userVerification: "preferred",
       },
       excludeCredentials: credentials,
     });

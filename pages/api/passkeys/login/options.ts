@@ -72,7 +72,7 @@ const GetLoginPasskeyOptions = async (
 
     const options = generateAuthenticationOptions({
       allowCredentials: credentials,
-      userVerification: "discouraged",
+      userVerification: "preferred",
       rpID: RELYING_PARTY_ID,
     });
 
