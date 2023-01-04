@@ -5,6 +5,12 @@ import {
   VerifyRegistrationResponseOpts,
 } from "@simplewebauthn/server";
 import { ORIGIN, RELYING_PARTY_ID } from "pages/api/_utils/configs";
+import {
+  createAccessToken,
+  createRefreshToken,
+  sendRefreshToken,
+} from "utils/auth";
+import { getUserAuthenticators } from "pages/api/_utils";
 
 const VerifyPasskeyRegister = async (
   req: NextApiRequest,
@@ -62,7 +68,22 @@ const VerifyPasskeyRegister = async (
         },
       });
 
-      res.status(200).send({ verified });
+      const authenticators = await getUserAuthenticators(user);
+
+      const token = createRefreshToken(user);
+      sendRefreshToken(res, token);
+
+      const accessToken = createAccessToken(user);
+
+      res.send({
+        user: {
+          id: user.id,
+          email: user.email,
+          authenticators: authenticators,
+        },
+        verified,
+        accessToken,
+      });
     } else {
       res.status(404).send({});
     }

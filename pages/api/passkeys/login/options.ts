@@ -1,58 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  PublicKeyCredentialDescriptorFuture,
-  AuthenticatorTransportFuture,
-} from "@simplewebauthn/typescript-types";
-import { User } from "@prisma/client";
-import Prisma from "utils/initPrisma";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { checkStaleLoginChallenge, getUserCredentials } from "pages/api/_utils";
 import { RELYING_PARTY_ID } from "pages/api/_utils/configs";
-
-const getUserAuthenticators = (user: User) => {
-  return Prisma.passkeyAuthenticator.findMany({
-    where: {
-      userId: user.id,
-    },
-  });
-};
-
-const checkStaleLoginChallenge = async (user: User) => {
-  // check if we already have a challenge for the user
-  // if true change it's active field to false
-  const staleChallenge = await Prisma.passkeyLoginChallenge.findFirst({
-    where: {
-      verified: false,
-      userId: user.id,
-      active: true,
-    },
-  });
-
-  if (staleChallenge !== null) {
-    await Prisma.passkeyLoginChallenge.update({
-      where: { id: staleChallenge.id },
-      data: {
-        active: false,
-      },
-    });
-  }
-};
-
-const getUserCredentials = async (
-  user: User
-): Promise<PublicKeyCredentialDescriptorFuture[]> => {
-  const authenticators = await getUserAuthenticators(user);
-
-  const credentials: PublicKeyCredentialDescriptorFuture[] = authenticators.map(
-    (authenticator) => ({
-      id: authenticator.credentialID,
-      type: "public-key" as const,
-      // Optional
-      transports: authenticator.transports as AuthenticatorTransportFuture[],
-    })
-  );
-
-  return credentials;
-};
+import Prisma from "utils/initPrisma";
 
 const GetLoginPasskeyOptions = async (
   req: NextApiRequest,

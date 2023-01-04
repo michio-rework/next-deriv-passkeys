@@ -9,13 +9,18 @@ import {
 } from "appConstants";
 import useAxios from "axios-hooks";
 import { useCallback, useState } from "react";
+import { useAppStore } from "store";
+import { TSecureUser } from "types/user.type";
 
 export interface IVerificationResponse {
   verified: boolean;
+  user: TSecureUser;
+  accessToken: string;
 }
 
 const usePasskeyRegister = () => {
   const [registerVerified, setRegisterVerified] = useState<boolean>(false);
+  const { setAccessToken, setUser } = useAppStore();
 
   const [optionsResult, getPasskeyOptions] = useAxios<
     PublicKeyCredentialCreationOptionsJSON,
@@ -54,13 +59,15 @@ const usePasskeyRegister = () => {
               credential: userRegistrationResult,
             },
           });
+          setAccessToken(verificationResult.data.accessToken);
+          setUser(verificationResult.data.user);
           setRegisterVerified(verificationResult.data.verified);
         }
       } catch (error) {
         console.error("Something went wrong: ", error);
       }
     },
-    [getPasskeyOptions, veriftyOptions]
+    [getPasskeyOptions, setAccessToken, setUser, veriftyOptions]
   );
 
   return {

@@ -25,7 +25,6 @@ export interface IVerifyPasskeyLoginResponse {
 }
 
 const usePasskeyLogin = () => {
-  const { hasWebAuthnAutofill } = useWebAuthn();
   const { setAccessToken, setUser } = useAppStore();
 
   const [optionsResult, getPasskeyOptions] = useAxios<

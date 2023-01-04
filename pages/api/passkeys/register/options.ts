@@ -1,58 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import Prisma from "utils/initPrisma";
-import { User } from "@prisma/client";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
+import { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/typescript-types";
+import type { NextApiRequest, NextApiResponse } from "next";
 import {
-  AuthenticatorTransportFuture,
-  PublicKeyCredentialDescriptorFuture,
-} from "@simplewebauthn/typescript-types";
+  checkStaleRegistrationChallenge,
+  getUserCredentials,
+} from "pages/api/_utils";
 import { RELYING_PARTY_ID, RELYING_PARTY_NAME } from "pages/api/_utils/configs";
-
-const checkStaleRegistrationChallenge = async (user: User) => {
-  // check if we already have a challenge for the user
-  // if true change it's active field to false
-  const staleChallenge = await Prisma.passkeyRegistrationChallenge.findFirst({
-    where: {
-      verified: false,
-      userId: user.id,
-      active: true,
-    },
-  });
-
-  if (staleChallenge !== null) {
-    await Prisma.passkeyRegistrationChallenge.update({
-      where: { id: staleChallenge.id },
-      data: {
-        active: false,
-      },
-    });
-  }
-};
-
-const getUserAuthenticators = (user: User) => {
-  return Prisma.passkeyAuthenticator.findMany({
-    where: {
-      userId: user.id,
-    },
-  });
-};
-
-const getUserCredentials = async (
-  user: User
-): Promise<PublicKeyCredentialDescriptorFuture[]> => {
-  const authenticators = await getUserAuthenticators(user);
-
-  const credentials: PublicKeyCredentialDescriptorFuture[] = authenticators.map(
-    (authenticator) => ({
-      id: authenticator.credentialID,
-      type: "public-key" as const,
-      // Optional
-      transports: authenticator.transports as AuthenticatorTransportFuture[],
-    })
-  );
-
-  return credentials;
-};
+import Prisma from "utils/initPrisma";
 
 const GetRegisterPasskeyOptions = async (
   req: NextApiRequest,
@@ -60,31 +14,54 @@ const GetRegisterPasskeyOptions = async (
 ) => {
   if (req.method === "POST") {
     const { email } = req.body;
-    const user = await Prisma.user.findUniqueOrThrow({
+    const user = await Prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    await checkStaleRegistrationChallenge(user);
+    let options: PublicKeyCredentialCreationOptionsJSON;
+    let userId;
 
-    const credentials = await getUserCredentials(user);
+    if (user) {
+      userId = user.id;
+      // User already has an account and wants to add passkeys to it
+      await checkStaleRegistrationChallenge(user);
+      const credentials = await getUserCredentials(user);
+      options = generateRegistrationOptions({
+        rpName: RELYING_PARTY_NAME,
+        rpID: RELYING_PARTY_ID,
+        userID: String(user.id),
+        userName: user.email,
+        attestationType: "direct",
+        authenticatorSelection: {
+          userVerification: "preferred",
+        },
+        excludeCredentials: credentials,
+      });
+    } else {
+      // User want to register with passkeys as password
+      const passwordLessUser = await Prisma.user.create({
+        data: {
+          email,
+        },
+      });
+      userId = passwordLessUser.id;
 
-    const options = generateRegistrationOptions({
-      rpName: RELYING_PARTY_NAME,
-      rpID: RELYING_PARTY_ID,
-      userID: String(user.id),
-      userName: user.email,
-      attestationType: "direct",
-      authenticatorSelection: {
-        userVerification: "preferred",
-      },
-      excludeCredentials: credentials,
-    });
-
+      options = generateRegistrationOptions({
+        rpName: RELYING_PARTY_NAME,
+        rpID: RELYING_PARTY_ID,
+        userID: String(passwordLessUser.id),
+        userName: passwordLessUser.email,
+        attestationType: "direct",
+        authenticatorSelection: {
+          userVerification: "preferred",
+        },
+      });
+    }
     await Prisma.passkeyRegistrationChallenge.create({
       data: {
-        userId: user.id,
+        userId: userId,
         challenge: options.challenge,
       },
     });

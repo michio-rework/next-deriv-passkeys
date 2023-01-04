@@ -1,19 +1,7 @@
-import Input from "components/input";
-import InputContainer from "components/inputContainer";
-import Label from "components/label";
-import usePasskeyLogin from "hooks/usePasskeyLogin";
-import { useRouter } from "next/router";
-import { SubmitHandler, useForm } from "react-hook-form";
-import styled from "styled-components";
 import Box from "components/box";
 import Button from "components/button";
-import { useEffect, useMemo } from "react";
-import { useAppStore } from "store";
-import useWebAuthn from "hooks/useWebAuthn";
-
-interface IPasskeysFormInputs {
-  email: string;
-}
+import { useRouter } from "next/router";
+import styled from "styled-components";
 
 const StyledBox = styled(Box)`
   text-align: center;
@@ -29,64 +17,24 @@ const ButtonContainer = styled.div`
 `;
 
 export default function Home() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IPasskeysFormInputs>({ mode: "all", reValidateMode: "onBlur" });
   const { push } = useRouter();
-
-  const { setAppLoading } = useAppStore();
-
-  const { hasWebAuthnAutofill } = useWebAuthn();
-
-  const { loading, loginPasskey } = usePasskeyLogin();
-
-  useEffect(() => {
-    setAppLoading(loading);
-  }, [loading, setAppLoading]);
-
-  const onSubmit: SubmitHandler<IPasskeysFormInputs> = (data) => {
-    loginPasskey(data.email);
-  };
-
-  const autoComplete = useMemo(() => {
-    let result = ["username"];
-    if (hasWebAuthnAutofill) {
-      result.push("webauthn");
-    }
-    return result.join(" ");
-  }, [hasWebAuthnAutofill]);
 
   return (
     <StyledBox>
       <div>
         <h1>Auth With Passkeys</h1>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputContainer>
-          <Label>Email</Label>
-          <Input
-            placeholder="Enter your email"
-            autoFocus={true}
-            autoComplete={autoComplete}
-            type="email"
-            {...register("email", {
-              required: true,
-              pattern:
-                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            })}
-          />
-          {errors.email && <span>Please Check your Email</span>}
-        </InputContainer>
-
-        <ButtonContainer>
-          <Button type="submit">Log In with passkeys</Button>
-          <Button type="button" onClick={() => push("/")}>
-            home page
-          </Button>
-        </ButtonContainer>
-      </form>
+      <ButtonContainer>
+        <Button type="button" onClick={() => push("/passkeys-auth/login")}>
+          Login with Passkeys
+        </Button>
+        <Button type="button" onClick={() => push("/passkeys-auth/signup")}>
+          Singup with passkeys
+        </Button>
+        <Button type="button" onClick={() => push("/")}>
+          home page
+        </Button>
+      </ButtonContainer>
     </StyledBox>
   );
 }
