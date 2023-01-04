@@ -55,10 +55,7 @@ const usePasskeyLogin = () => {
       try {
         const options = await getPasskeyOptions({ data: { email } });
 
-        const userLoginResult = await startAuthentication(
-          options.data,
-          hasWebAuthnAutofill
-        );
+        const userLoginResult = await startAuthentication(options.data);
 
         const verifyReqData = {
           email,
