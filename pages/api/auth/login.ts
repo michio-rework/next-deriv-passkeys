@@ -39,10 +39,18 @@ const signin = async (
             email: user.email,
             authenticators: user.PasskeyAuthenticators,
           };
-          res.send({ user: userForTheClient, accessToken });
+          res.status(200).send({
+            user: userForTheClient,
+            accessToken,
+            shouldUsePasskeys: false,
+          });
         } else {
           res.status(404).send({});
         }
+      } else {
+        res.status(200).send({
+          shouldUsePasskeys: true,
+        });
       }
     } catch (error) {
       res.status(404).send({});

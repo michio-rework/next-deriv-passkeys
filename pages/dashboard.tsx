@@ -53,6 +53,11 @@ const Dashboard = () => {
 
       {data?.length && <StyledTable data={data} />}
 
+      <p>
+        If you dont want to use YubiKey please remove it from your device first
+        before adding new passkey
+      </p>
+
       <ButtonContainer>
         <Button onClick={() => registerPasskey(user.email)}>
           Add New Passkey

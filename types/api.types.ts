@@ -8,4 +8,5 @@ export interface ILoginBody {
 export type TAuthResponse = {
   user?: TSecureUser;
   accessToken?: string;
+  shouldUsePasskeys?: boolean;
 };

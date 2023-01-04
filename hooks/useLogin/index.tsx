@@ -12,6 +12,7 @@ export interface ILoginRequest {
 export interface ILoginResponse {
   user: TSecureUser;
   accessToken: string;
+  shouldUsePasskeys: boolean;
 }
 
 const useLogin = () => {
@@ -31,8 +32,12 @@ const useLogin = () => {
 
       try {
         const { data } = await execute({ data: reqData });
-        setAccessToken(data.accessToken);
-        setUser(data.user);
+        if (data.shouldUsePasskeys) {
+          alert("Please use your passkeys to login!");
+        } else {
+          setAccessToken(data.accessToken);
+          setUser(data.user);
+        }
       } catch (error) {
         console.error("Something went wrong: ", error);
       }

@@ -41,9 +41,10 @@ export default function Home() {
       </div>
       <div>
         <p>
-          If you dont have an account please create one with
-          <strong> email and password </strong>
-          and then try adding passkeys to your registered account
+          With passkeys flow you only need to know your{" "}
+          <strong>email ( as username )</strong>, if you want you can create an
+          account with <strong>password flow</strong> and then add new passkeys
+          to your account
         </p>
       </div>
       <ButtonContainer>
