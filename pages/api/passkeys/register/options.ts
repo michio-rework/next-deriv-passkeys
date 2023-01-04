@@ -2,7 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Prisma from "utils/initPrisma";
 import { User } from "@prisma/client";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
-import { PublicKeyCredentialDescriptorFuture } from "@simplewebauthn/typescript-types";
+import {
+  AuthenticatorTransportFuture,
+  PublicKeyCredentialDescriptorFuture,
+} from "@simplewebauthn/typescript-types";
 import { RELYING_PARTY_ID, RELYING_PARTY_NAME } from "pages/api/_utils/configs";
 
 const checkStaleRegistrationChallenge = async (user: User) => {
@@ -42,11 +45,12 @@ const getUserCredentials = async (
   const credentials: PublicKeyCredentialDescriptorFuture[] = authenticators.map(
     (authenticator) => ({
       id: authenticator.credentialID,
-      type: "public-key",
+      type: "public-key" as const,
       // Optional
-      // transports: authenticator.transports,
+      transports: authenticator.transports as AuthenticatorTransportFuture[],
     })
   );
+
   return credentials;
 };
 
@@ -71,7 +75,7 @@ const GetRegisterPasskeyOptions = async (
       rpID: RELYING_PARTY_ID,
       userID: String(user.id),
       userName: user.email,
-      attestationType: "direct",
+      attestationType: "none",
       authenticatorSelection: {
         requireResidentKey: false,
         userVerification: "discouraged",
