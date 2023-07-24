@@ -13,6 +13,15 @@ npm install
 ### Initialize the Database
 
 - copy the .env.local to .env ( create it please )
+
+please run:
+
+```
+docker compose up -d
+```
+
+to setup the postgres and pgAdmin
+
 - then run this to populate the database based on `prisma/schema.prisma`
 
 ```sh
